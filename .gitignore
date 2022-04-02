@@ -1,5 +1,8 @@
 # User Stuff
 .DS_Store
+.vscode
+writetests
+um
 
 # Prerequisites
 *.d

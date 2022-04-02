@@ -11,6 +11,8 @@ extern void Um_write_sequence(FILE *output, Seq_T instructions);
 
 extern void build_halt_test(Seq_T instructions);
 extern void build_verbose_halt_test(Seq_T instructions);
+extern void build_add_test(Seq_T stream);
+extern void build_print_digit_test(Seq_T stream);
 
 
 /* The array `tests` contains all unit tests for the lab. */
@@ -22,8 +24,10 @@ static struct test_info {
         /* writes instructions into sequence */
         void (*build_test)(Seq_T stream);
 } tests[] = {
-        { "halt",         NULL, "", build_halt_test },
-        { "halt-verbose", NULL, "", build_verbose_halt_test }
+        { "halt",         NULL, "",  build_halt_test },
+        { "halt-verbose", NULL, "",  build_verbose_halt_test },
+        { "add"         , NULL, "",  build_add_test },
+        { "print-six"   , NULL, "6", build_print_digit_test }
 };
 
   
