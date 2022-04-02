@@ -21,7 +21,7 @@ IFLAGS = -I/comp/40/build/include -I/usr/sup/cii40/include/cii
 # Compile flags
 # Set debugging information, allow the c99 standard,
 # max out warnings, and use the updated include path
-CFLAGS = -g3 -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic $(IFLAGS)
+CFLAGS = -g3 -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic -fPIC $(IFLAGS)
 
 # Linking flags
 # Set debugging information and update linking path
@@ -39,25 +39,18 @@ LDLIBS = -lbitpack -lcii40 -lm
 # he agrees with Noah that you'll probably spend hours
 # debugging if you forget to put .h files in your
 # dependency list.
-INCLUDES = $(shell echo *.h)
+# INCLUDES = $(shell echo *.h) 
 
 ############### Rules ###############
 
-all: um
+# all: um
 
 
 ## Compile step (.c files -> .o files)
-
 # To get *any* .o file, compile its .c file with the following rule.
 %.o: %.c $(INCLUDES)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-
-## Making shared object files
-
-# To get *any* .so file from a .c
-bitpack.so: bitpack.c $(INCLUDES)
-	$(CC) $(LDFLAGS) $(CFLAGS) -fPIC -shared -o $@ $^ $(LDLIBS)
 
 ## Linking step (.o -> executable program)
 
@@ -71,7 +64,7 @@ um:
 # Test mains
 
 # Unit testing with python
-test: bitpack.so all
+test: all
 	@echo -e "\n\n* * * * * * * * *\n* Begin " \
 	"Testing *\n* * * * * * * * *\n\n"
 	python test_um.py
@@ -80,4 +73,4 @@ check:
 	wc -L *.h *.c README Makefile
 
 clean:
-	rm -f um *.o *.so
+	rm -f um *.o

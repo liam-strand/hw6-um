@@ -41,7 +41,77 @@ Um_instruction three_register(Um_opcode op, int ra, int rb, int rc)
 
         return inst;
 }
-Um_instruction loadval(unsigned ra, unsigned val)
+
+/* Wrapper functions for each of the instructions */
+
+typedef enum Um_register { r0 = 0, r1, r2, r3, r4, r5, r6, r7 } Um_register;
+
+static inline Um_instruction conditional_move(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(CMOV, a, b, c);
+}
+
+static inline Um_instruction segmented_load(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(SLOAD, a, b, c);
+}
+
+static inline Um_instruction segmented_store(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(SSTORE, a, b, c);
+}
+
+static inline Um_instruction add(Um_register a, Um_register b, Um_register c) 
+{
+        return three_register(ADD, a, b, c);
+}
+
+static inline Um_instruction mul(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(MUL, a, b, c);
+}
+
+static inline Um_instruction div(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(DIV, a, b, c);
+}
+
+static inline Um_instruction nand(Um_register a, Um_register b, Um_register c)
+{
+        return three_register(NAND, a, b, c);
+}
+
+static inline Um_instruction halt(void) 
+{
+        return three_register(HALT, 0, 0, 0);
+}
+
+static inline Um_instruction map_segment(Um_register b, Um_register c)
+{
+        return three_register(ACTIVATE, 0, b, c);
+}
+
+static inline Um_instruction unmap_segment(Um_register c)
+{
+        return three_register(INACTIVATE, 0, 0, c);
+}
+
+static inline Um_instruction output(Um_register c)
+{
+        return three_register(OUT, 0, 0, c);
+}
+
+static inline Um_instruction input(Um_register c)
+{
+        return three_register(IN, 0, 0, c);
+}
+
+static inline Um_instruction load_program(Um_register b, Um_register c)
+{
+        return three_register(LOADP, 0, b, c);
+}
+
+Um_instruction load_value(unsigned ra, unsigned val)
 {
         Um_instruction inst = 0xd0000000;
 
@@ -49,26 +119,6 @@ Um_instruction loadval(unsigned ra, unsigned val)
         inst = Bitpack_newu(inst, 25,  0, val);
         
         return inst;
-}
-
-
-/* Wrapper functions for each of the instructions */
-
-static inline Um_instruction halt(void) 
-{
-        return three_register(HALT, 0, 0, 0);
-}
-
-typedef enum Um_register { r0 = 0, r1, r2, r3, r4, r5, r6, r7 } Um_register;
-
-static inline Um_instruction add(Um_register a, Um_register b, Um_register c) 
-{
-        return three_register(ADD, a, b, c);
-}
-
-Um_instruction output(Um_register c)
-{
-        return three_register(OUT, 0, 0, c);
 }
 
 /* Functions for working with streams */
@@ -105,15 +155,15 @@ void build_halt_test(Seq_T stream)
 void build_verbose_halt_test(Seq_T stream)
 {
         append(stream, halt());
-        append(stream, loadval(r1, 'B'));
+        append(stream, load_value(r1, 'B'));
         append(stream, output(r1));
-        append(stream, loadval(r1, 'a'));
+        append(stream, load_value(r1, 'a'));
         append(stream, output(r1));
-        append(stream, loadval(r1, 'd'));
+        append(stream, load_value(r1, 'd'));
         append(stream, output(r1));
-        append(stream, loadval(r1, '!'));
+        append(stream, load_value(r1, '!'));
         append(stream, output(r1));
-        append(stream, loadval(r1, '\n'));
+        append(stream, load_value(r1, '\n'));
         append(stream, output(r1));
 }
 
@@ -125,8 +175,8 @@ void build_add_test(Seq_T stream)
 
 void build_print_digit_test(Seq_T stream)
 {
-        append(stream, loadval(r1, '0'));
-        append(stream, loadval(r2, 6));
+        append(stream, load_value(r1, '0'));
+        append(stream, load_value(r2, 6));
         append(stream, add(r3, r1, r2));
         append(stream, output(r3));
         append(stream, halt());
