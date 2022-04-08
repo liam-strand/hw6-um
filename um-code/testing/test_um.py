@@ -21,6 +21,13 @@ def main():
         ], None, "6\n"),
         ("halt_test", [
             ul.halt()
+        ], None, None),
+        ("input_test", [
+            ul.input(1),
+            ul.load_value(2, 1),
+            ul.add(3, 1, 2),
+            ul.output(3),
+            ul.halt(),
         ], None, None)
     ]
 
