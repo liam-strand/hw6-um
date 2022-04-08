@@ -54,8 +54,8 @@ LDLIBS = -lbitpack -lcii40 -lm
 
 ## Linking step (.o -> executable program)
 
-um:
-	@echo "unimplemented"
+um: main.o prepare.o um_state.o
+	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 
 
