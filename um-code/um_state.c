@@ -17,6 +17,9 @@ void execute_instructions(size_t   *program_counter,
                           Seq_T     other_segs,
                           Seq_T     available_indices);
 
+void get_regs(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
+                             uint32_t *rb_p, uint32_t *rc_p);
+
 extern void um_run(FILE *input_file, char *file_path)
 {
     uint32_t *prog_seg = parse_file(input_file, file_path);
@@ -62,10 +65,15 @@ void execute_instructions(size_t   *program_counter,
     while (shouldContinue) {
 
         uint32_t inst = prog_seg[*program_counter];
-        uint32_t inst_code = Bitpack_getu(inst, 4, 28);
+
+        uint32_t op, ra, rb, rc;
+        get_regs(inst, &op, &ra, &rb, &rc);
+
+        fprintf(stderr, "%d %d %d %d\n", op, ra, rb, rc);
+
         (*program_counter)++;
 
-        switch(inst_code) {
+        switch(op) {
             case  0 : fprintf(stderr, "cmov\n"); break;
             case  1 : fprintf(stderr, "segl\n"); break;
             case  2 : fprintf(stderr, "segs\n"); break;
@@ -83,4 +91,13 @@ void execute_instructions(size_t   *program_counter,
             default : fprintf(stderr, "fuck\n"); break;
         }
     }
+}
+
+void get_regs(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
+                             uint32_t *rb_p, uint32_t *rc_p)
+{
+    *op_p = Bitpack_getu(inst, 4, 28);
+    *ra_p = Bitpack_getu(inst, 3,  6);
+    *rb_p = Bitpack_getu(inst, 3,  3);
+    *rc_p = Bitpack_getu(inst, 3,  0);
 }
