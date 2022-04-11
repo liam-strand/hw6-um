@@ -1,8 +1,25 @@
+/*
+ * instructions.c
+ *
+ * COMP 40 HW6: um
+ *
+ * By:   Matt Ung (mung01)
+ *    Liam Strand (lstran01)
+ *
+ * On: April 2022
+ *
+ * TODO
+ * 
+ */
+
+#include <stdlib.h>
+#include <stdint.h>
+#include <math.h>
+#include <assert.h>
+#include <seq.h>
+#include <uarray.h>
 
 #include "instructions.h"
-#include "assert.h"
-#include <math.h>
-#include <uarray.h>
 
 extern void I_c_mov(uint32_t *source, uint32_t *dest, uint32_t *check)
 {
