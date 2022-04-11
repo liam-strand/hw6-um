@@ -11,6 +11,10 @@ extern void I_add(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest);
 extern void I_mult(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest);
 extern void I_div(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest);
 extern void I_nand(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest);
+// extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t num_words, 
+//                                                              uint32_t *reg_b);
+// extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t num_words, 
+//                                                              uint32_t *reg_c);
 extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t *dest, uint32_t num_words);
 extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t *source);
 extern void I_out(uint32_t *reg);
