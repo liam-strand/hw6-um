@@ -39,11 +39,11 @@ LDLIBS = -lbitpack -lcii40 -lm
 # he agrees with Noah that you'll probably spend hours
 # debugging if you forget to put .h files in your
 # dependency list.
-# INCLUDES = $(shell echo *.h) 
+INCLUDES = $(shell echo *.h) 
 
 ############### Rules ###############
 
-# all: um
+all: um
 
 
 ## Compile step (.c files -> .o files)
@@ -54,7 +54,7 @@ LDLIBS = -lbitpack -lcii40 -lm
 
 ## Linking step (.o -> executable program)
 
-um: main.o prepare.o um_state.o
+um: main.o prepare.o um_state.o instructions.o
 	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 

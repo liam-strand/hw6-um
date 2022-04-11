@@ -1,3 +1,17 @@
+/*
+ * prepare.c
+ *
+ * COMP 40 HW6: um
+ *
+ * By:   Matt Ung (mung01)
+ *    Liam Strand (lstran01)
+ *
+ * On: April 2022
+ *
+ * TODO
+ * 
+ */
+
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -10,11 +24,6 @@
 #include "prepare.h"
 
 static const unsigned BYTE_SIZE = 8;
-
-/* union ArrToInt {
-    unsigned char array[4];
-    uint32_t      integer;
-}; */
 
 uint32_t read_one_instruction(FILE *input_file);
 
