@@ -75,21 +75,30 @@ extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t *source)
 
 extern void I_out(uint32_t *reg)
 {
-    printf("%c", *reg);
+    fputc(*reg, stdout);
 }
 
 extern void I_in(uint32_t *reg)
 {
-    *reg = (uint32_t)getc(stdin);
+    *reg = (uint32_t)fgetc(stdin);
 }
 
 extern void I_load_p(uint32_t **prog_seg_p, Seq_T     oth_segs, uint32_t *reg_b, 
                      uint32_t  *reg_c,      uint32_t *p_counter)
 {
-
+    if (*reg_b != 0) {
+        uint32_t *prog = *prog_seg_p
+        UArrray_T to_copy = (UArray_T) Seq_get(oth_segs, *reg_b);
+        int len = UArray_length(to_copy);
+        prog = (uint32_t *) RESIZE(prog, sizeof(uint32_t) * len);
+        for (int i = 0; i < len; i++) {
+            prog[i] = *(uint32_t *) UArray_at(to_copy, i);
+        }
+    }
+    *p_counter = *reg_c;
 }
 
 extern void I_load_v(uint32_t value, uint32_t *dest_reg)
 {
-
+    *dest_reg = value;
 }
