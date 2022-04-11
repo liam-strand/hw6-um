@@ -74,21 +74,51 @@ void execute_instructions(size_t   *program_counter,
         (*program_counter)++;
 
         switch(op) {
-            case  0 : fprintf(stderr, "cmov\n"); break;
-            case  1 : fprintf(stderr, "segl\n"); break;
-            case  2 : fprintf(stderr, "segs\n"); break;
-            case  3 : fprintf(stderr, "addd\n"); break;
-            case  4 : fprintf(stderr, "mult\n"); break;
-            case  5 : fprintf(stderr, "divs\n"); break;
-            case  6 : fprintf(stderr, "nand\n"); break; 
-            case  7 : fprintf(stderr, "halt\n"); shouldContinue = false; break; 
-            case  8 : fprintf(stderr, "maps\n"); break;
-            case  9 : fprintf(stderr, "umap\n"); break;
-            case 10 : fprintf(stderr, "outp\n"); break;
-            case 11 : fprintf(stderr, "inpu\n"); break;
-            case 12 : fprintf(stderr, "loap\n"); break;
-            case 13 : fprintf(stderr, "loav\n"); break;
-            default : fprintf(stderr, "fuck\n"); break;
+            case 0:
+                fprintf(stderr, "cmov\n"); 
+                break;
+            case 1:
+                fprintf(stderr, "segl\n"); 
+                break;
+            case 2:
+                fprintf(stderr, "segs\n"); 
+                break;
+            case 3:
+                fprintf(stderr, "addd\n"); 
+                break;
+            case 4:
+                fprintf(stderr, "mult\n"); 
+                break;
+            case 5:
+                fprintf(stderr, "divs\n"); 
+                break;
+            case 6:
+                fprintf(stderr, "nand\n"); 
+                break; 
+            case 7:
+                fprintf(stderr, "halt\n"); 
+                break; 
+            case 8:
+                fprintf(stderr, "maps\n"); 
+                break;
+            case 9:
+                fprintf(stderr, "umap\n"); 
+                break;
+            case 10:
+                fprintf(stderr, "outp\n"); 
+                break;
+            case 11:
+                fprintf(stderr, "inpu\n"); 
+                break;
+            case 12:
+                fprintf(stderr, "loap\n"); 
+                break;
+            case 13:
+                fprintf(stderr, "loav\n"); 
+                break;
+            default:
+                fprintf(stderr, "fuck\n"); 
+                break;
         }
     }
 }
