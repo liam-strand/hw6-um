@@ -14,11 +14,15 @@ void clean_up(uint32_t **prog_seg_p,
 
 void execute_instructions(size_t   *program_counter,
                           uint32_t *prog_seg,
+                          uint32_t *regs,
                           Seq_T     other_segs,
                           Seq_T     available_indices);
 
 void get_regs(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
                              uint32_t *rb_p, uint32_t *rc_p);
+
+uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs, 
+                     uint32_t  seg_num,  uint32_t seg_index);
 
 extern void um_run(FILE *input_file, char *file_path)
 {
@@ -33,7 +37,7 @@ extern void um_run(FILE *input_file, char *file_path)
     Seq_T other_segs   = Seq_new(5);
     Seq_T recycled_ids = Seq_new(5);
 
-    execute_instructions(&prog_counter, prog_seg, other_segs, recycled_ids);
+    execute_instructions(&prog_counter, prog_seg, r, other_segs, recycled_ids);
 
     clean_up(&prog_seg, &other_segs, &recycled_ids);
 }
@@ -53,6 +57,7 @@ void clean_up(uint32_t **prog_seg_p,
 
 void execute_instructions(size_t   *program_counter,
                           uint32_t *prog_seg,
+                          uint32_t *regs,
                           Seq_T     other_segs,
                           Seq_T     available_indices)
 {
@@ -67,7 +72,7 @@ void execute_instructions(size_t   *program_counter,
         uint32_t inst = prog_seg[*program_counter];
 
         uint32_t op, ra, rb, rc;
-        get_regs(inst, &op, &ra, &rb, &rc);
+        get_regs(inst, &op, &ra, &rb, regs[rc]);
 
         fprintf(stderr, "%d %d %d %d\n", op, ra, rb, rc);
 
@@ -75,50 +80,52 @@ void execute_instructions(size_t   *program_counter,
 
         switch(op) {
             case 0:
-                fprintf(stderr, "cmov\n"); 
+                I_c_mov(&regs[rb], &regs[ra], &regs[rc]);
                 break;
             case 1:
-                fprintf(stderr, "segl\n"); 
+                I_seg_load(seg_source(prog_seg, other_segs, regs[rb], regs[rc]), &regs[ra]); 
                 break;
             case 2:
-                fprintf(stderr, "segs\n"); 
+                I_seg_store(&regs[rc], seg_source(prog_seg, other_segs, regs[ra], regs[rb])); 
                 break;
             case 3:
-                fprintf(stderr, "addd\n"); 
+                I_add(&regs[ra], &regs[rb], &regs[rc]);
                 break;
             case 4:
-                fprintf(stderr, "mult\n"); 
+                I_mult(&regs[ra], &regs[rb], &regs[rc]);
                 break;
             case 5:
-                fprintf(stderr, "divs\n"); 
+                I_div(&regs[ra], &regs[rb], &regs[rc]);
                 break;
             case 6:
-                fprintf(stderr, "nand\n"); 
+                I_nand(&regs[ra], &regs[rb], &regs[rc]);
                 break; 
             case 7:
-                fprintf(stderr, "halt\n"); 
+                shouldContinue = false;
                 break; 
             case 8:
-                fprintf(stderr, "maps\n"); 
+                I_map(other_segs, available_indices, &regs[rb], regs[rc]);
                 break;
             case 9:
-                fprintf(stderr, "umap\n"); 
+                I_unmap(other_segs, available_indices, &regs[rc]);
                 break;
             case 10:
-                fprintf(stderr, "outp\n"); 
-                break;
+                I_out(&regs[rc]);
+            break;
             case 11:
-                fprintf(stderr, "inpu\n"); 
+                I_in(&regs[rc]);
                 break;
             case 12:
-                fprintf(stderr, "loap\n"); 
+                I_load_p(&prog_seg, other_segs, &regs[rb], &regs[rc], program_counter);
                 break;
             case 13:
-                fprintf(stderr, "loav\n"); 
+                uint32_t reg_id = Bitpack_getu(inst, 3, 25);
+                uint32_t value  = Bitpack_getu(inst, 25, 0);
+                I_load_v(value, &regs[reg_id]);
                 break;
             default:
                 fprintf(stderr, "fuck\n"); 
-                break;
+                shouldContinue = false;
         }
     }
 }
