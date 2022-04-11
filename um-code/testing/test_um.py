@@ -6,7 +6,7 @@ from enum import Enum
 from random import randint
 
 def main():
-    ul = CDLL("./umlab.so")
+    ul = CDLL("./testing/umlab.so")
     prepare_library(ul)
 
     tests = [
@@ -28,7 +28,7 @@ def main():
             ul.add(3, 1, 2),
             ul.output(3),
             ul.halt(),
-        ], None, None)
+        ], "5", "5")
     ]
 
     run_tests(tests)
@@ -56,9 +56,9 @@ def run_test(test_name, infile=None, outfile=None):
     if infile and not outfile:
         sp.run(f"cat {infile} | um {test_name}.um", shell=True)
     elif not infile and not outfile:
-        sp.run(f"um {test_name}.um", shell=True)
+        sp.run(f"./um {test_name}.um", shell=True)
     elif not infile and outfile:
-        sp.run(f"um {test_name}.um > {test_name}.realout", shell=True)
+        sp.run(f"./um {test_name}.um > {test_name}.realout", shell=True)
         sp.run(f"diff {test_name}.realout, {outfile}", shell=True)
     else:
         sp.run(f"cat {infile} | um {test_name}.um > {test_name}.realout", shell=True)

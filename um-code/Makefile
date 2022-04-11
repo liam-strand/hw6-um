@@ -67,7 +67,7 @@ um: main.o prepare.o um_state.o instructions.o
 test: all
 	@echo -e "\n\n* * * * * * * * *\n* Begin " \
 	"Testing *\n* * * * * * * * *\n\n"
-	python test_um.py
+	python testing/test_um.py
 
 check:
 	wc -L *.h *.c README Makefile
