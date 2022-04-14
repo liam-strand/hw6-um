@@ -19,6 +19,7 @@
 #include <seq.h>
 #include <assert.h>
 #include <bitpack.h>
+#include <uarray.h>
 
 #include "um_state.h"
 #include "prepare.h"
@@ -62,6 +63,9 @@ void prepare_lv(uint32_t inst, uint32_t *reg_id, uint32_t *value);
 uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
                      uint32_t  seg_num,  uint32_t seg_index);
 
+void deep_free_uarray(Seq_T seq);
+void deep_free_int(Seq_T seq);
+
 extern void um_run(FILE *input_file, char *file_path)
 {
     uint32_t *prog_seg = parse_file(input_file, file_path);
@@ -70,7 +74,9 @@ extern void um_run(FILE *input_file, char *file_path)
 
     uint32_t r[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
-    Seq_T other_segs   = Seq_new(5);
+    Seq_T other_segs = Seq_new(5);
+    Seq_addlo(other_segs, NULL);
+
     Seq_T recycled_ids = Seq_new(5);
 
     execute_instructions(&prog_counter, prog_seg, r, other_segs, recycled_ids);
@@ -182,10 +188,36 @@ void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p)
     assert(*prog_seg_p != NULL && *other_segs_p != NULL && *recycled_p != NULL);
     
     FREE(*prog_seg_p);
+
+    deep_free_uarray(*other_segs_p);
+    deep_free_int(*recycled_p);
+
     Seq_free(other_segs_p);
     Seq_free(recycled_p);
 
     *prog_seg_p   = NULL;
     *other_segs_p = NULL;
     *recycled_p   = NULL;
+}
+
+void deep_free_uarray(Seq_T seq)
+{
+    unsigned len = Seq_length(seq);
+    for (unsigned i = 1; i < len; i++) {
+        UArray_T ua = (UArray_T)Seq_get(seq, i);
+        if (ua != NULL) {
+            UArray_free(&ua);
+        }
+    }
+}
+
+void deep_free_int(Seq_T seq)
+{
+    unsigned len = Seq_length(seq);
+    for (unsigned i = 0; i < len; i++) {
+        int *n = (int *)Seq_get(seq, i);
+        if (n != NULL) {
+            FREE(n);
+        }
+    }
 }

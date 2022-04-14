@@ -64,8 +64,6 @@ extern void I_nand(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
 }
 
 extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t *dest, uint32_t num_words)
-// extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t num_words, 
-                                                             // uint32_t *reg_b)
 {
     UArray_T mapped_arr = UArray_new(num_words, sizeof(uint32_t));
     
@@ -76,26 +74,25 @@ extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t *dest, uin
         FREE(recycled_index);
     }
     else {
-        int new_index = Seq_length(available_indices);
+        int new_index = Seq_length(other_segs);
         Seq_addhi(other_segs, mapped_arr);
         *dest = new_index;
     }
 }
 
 extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t *source)
-// extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t num_words, 
-                                                             // uint32_t *reg_c)
 {
     int *free_index = ALLOC(sizeof(*free_index));
     *free_index = *(int *) source;
-    UArray_free((UArray_T *)Seq_put(other_segs, *source, NULL));
+    UArray_T to_free = (UArray_T)Seq_put(other_segs, *source, NULL);
+    UArray_free(&to_free);
     Seq_addhi(available_indices, free_index);
 }
 
 extern void I_out(uint32_t *reg)
 {
+    assert(*reg < 256);
     fputc(*reg, stdout);
-    // fprintf(stderr, "%x--%d\n", *reg, *reg);
 }
 
 extern void I_in(uint32_t *reg)

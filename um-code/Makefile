@@ -21,12 +21,12 @@ IFLAGS = -I/comp/40/build/include -I/usr/sup/cii40/include/cii
 # Compile flags
 # Set debugging information, allow the c99 standard,
 # max out warnings, and use the updated include path
-CFLAGS = -g3 -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic -fPIC $(IFLAGS)
+CFLAGS = -g3 -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic $(IFLAGS)
 
 # Linking flags
 # Set debugging information and update linking path
 # to include course binaries and CII implementations
-LDFLAGS = -g -L/comp/40/build/lib -L/usr/sup/cii40/lib64
+LDFLAGS = -g3 -L/comp/40/build/lib -L/usr/sup/cii40/lib64
 
 # Libraries needed for linking
 LDLIBS = -lbitpack -lcii40 -lm
@@ -58,19 +58,22 @@ um: main.o prepare.o um_state.o instructions.o
 	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 
-
 ### TESTING
 
 # Test mains
 
 # Unit testing with python
 test: all
-	@echo -e "\n\n* * * * * * * * *\n* Begin " \
-	"Testing *\n* * * * * * * * *\n\n"
-	python testing/test_um.py
+	@echo -e "\n* * * * * * * * *\n* Begin" \
+	"Testing *\n* * * * * * * * *\n"
+	@python testing/test_um.py
+
+test-clean:
+	rm -rf testing/output
+	mkdir testing/output
 
 check:
 	wc -L *.h *.c README Makefile
 
-clean:
+clean: test-clean
 	rm -f um *.o
