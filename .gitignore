@@ -4,6 +4,9 @@
 writetests
 um
 
+# Python
+__pycache__
+
 # Prerequisites
 *.d
 
