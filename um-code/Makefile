@@ -69,11 +69,11 @@ test: all
 	@python testing/test_um.py
 
 test-clean:
-	rm -rf testing/output
+	-rm -rf testing/output
 	mkdir testing/output
 
 check:
-	wc -L *.h *.c README Makefile
+	-@grep -n --color=auto '.\{80\}' *.h *.c Makefile
 
 clean: test-clean
-	rm -f um *.o
+	-rm -f um *.o

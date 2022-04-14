@@ -110,10 +110,13 @@ void execute_instructions(size_t   *program_counter,
                 I_c_mov(&regs[rb], &regs[ra], &regs[rc]);
                 break;
             case 1:
-                I_seg_load(seg_source(prog_seg, other_segs, regs[rb], regs[rc]), &regs[ra]); 
+                I_seg_load(seg_source(prog_seg, other_segs, 
+                                      regs[rb], regs[rc]), &regs[ra]); 
                 break;
             case 2:
-                I_seg_store(&regs[rc], seg_source(prog_seg, other_segs, regs[ra], regs[rb])); 
+                I_seg_store(&regs[rc], 
+                            seg_source(prog_seg, other_segs, regs[ra], 
+                                                             regs[rb])); 
                 break;
             case 3:
                 I_add(&regs[rb], &regs[rc], &regs[ra]);
@@ -143,7 +146,8 @@ void execute_instructions(size_t   *program_counter,
                 I_in(&regs[rc]);
                 break;
             case 12:
-                I_load_p(&prog_seg, other_segs, &regs[rb], &regs[rc], program_counter);
+                I_load_p(&prog_seg, other_segs, &regs[rb], 
+                                                &regs[rc], program_counter);
                 break;
             case 13:
                 prepare_lv(inst, &ra, &value);
@@ -184,8 +188,9 @@ uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
 
 void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p)
 {
-    assert( prog_seg_p != NULL &&  other_segs_p != NULL &&  recycled_p != NULL);
-    assert(*prog_seg_p != NULL && *other_segs_p != NULL && *recycled_p != NULL);
+    assert(prog_seg_p   != NULL && *prog_seg_p   != NULL);
+    assert(other_segs_p != NULL && *other_segs_p != NULL);
+    assert(recycled_p   != NULL && *recycled_p   != NULL);
     
     FREE(*prog_seg_p);
 

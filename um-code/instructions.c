@@ -63,7 +63,10 @@ extern void I_nand(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
     *dest = ~((*reg_a) & (*reg_b));
 }
 
-extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t *dest, uint32_t num_words)
+extern void I_map(Seq_T     other_segs, 
+                  Seq_T     available_indices, 
+                  uint32_t *dest, 
+                  uint32_t  num_words)
 {
     UArray_T mapped_arr = UArray_new(num_words, sizeof(uint32_t));
     
@@ -80,7 +83,9 @@ extern void I_map(Seq_T other_segs, Seq_T available_indices, uint32_t *dest, uin
     }
 }
 
-extern void I_unmap(Seq_T other_segs, Seq_T available_indices, uint32_t *source)
+extern void I_unmap(Seq_T     other_segs, 
+                    Seq_T     available_indices, 
+                    uint32_t *source)
 {
     int *free_index = ALLOC(sizeof(*free_index));
     *free_index = *(int *) source;
