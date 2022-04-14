@@ -174,3 +174,30 @@ def generate_load_seg_tests(lib) -> list:
         )
     
     return tests
+
+def generate_combined_tests(lib) -> list:
+    tests = []
+    for i in range(0, 8):
+        j = (i + 1) % 8
+        k = (i + 2) % 8
+        l = (i + 3) % 8
+        for n in range(0, 128):
+            tests.append(
+                (f"combined_{i}_{n}_test", [
+                    lib.input(j),
+                    lib.load_value(k, 139),
+                    lib.add(l, j, k),
+                    lib.load_value(k, 2),
+                    lib.mul(j, l, k),
+                    lib.load_value(l, 3),
+                    lib.div(k, j, l),
+                    lib.load_value(j, 255),
+                    lib.nand(l, j, k),
+                    lib.nand(k, l, l),
+                    lib.output(k),
+                    lib.load_value(6, ord('\n')),
+                    lib.output(6),
+                    lib.halt(),
+                ], chr(n))
+            )
+    return tests

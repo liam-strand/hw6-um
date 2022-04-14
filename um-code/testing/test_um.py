@@ -36,7 +36,7 @@ def main():
         ], "5"),
     ]
 
-    # run_tests(tests)
+    run_tests(tests)
 
     run_tests(generate_div_tests(ul), "div")
     run_tests(generate_add_tests(ul), "add")
@@ -46,8 +46,9 @@ def main():
     run_tests(generate_seg_map_tests(ul), "seq_map")
     run_tests(generate_seg_unmap_tests(ul), "seq_unmap")
     run_tests(generate_load_seg_tests(ul), "load_seq")
+    run_tests(generate_combined_tests(ul), "combined")
 
-def run_tests(tests: list, name: str) -> None:
+def run_tests(tests: list, name=None) -> None:
     with mp.Pool(10) as pool:
         list(tqdm(pool.imap(apply_test, tests), total=len(tests), desc=name))
     # for test in tqdm(tests):
