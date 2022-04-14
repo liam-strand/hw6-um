@@ -50,7 +50,7 @@ void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p);
  *      Notes: none
  */
 void execute_instructions(size_t   *program_counter,
-                          uint32_t *prog_seg,
+                          uint32_t **prog_seg,
                           uint32_t *regs,
                           Seq_T     other_segs,
                           Seq_T     available_indices);
@@ -79,13 +79,13 @@ extern void um_run(FILE *input_file, char *file_path)
 
     Seq_T recycled_ids = Seq_new(5);
 
-    execute_instructions(&prog_counter, prog_seg, r, other_segs, recycled_ids);
+    execute_instructions(&prog_counter, &prog_seg, r, other_segs, recycled_ids);
 
     clean_up(&prog_seg, &other_segs, &recycled_ids);
 }
 
 void execute_instructions(size_t   *program_counter,
-                          uint32_t *prog_seg,
+                          uint32_t **prog_seg,
                           uint32_t *regs,
                           Seq_T     other_segs,
                           Seq_T     available_indices)
@@ -96,7 +96,9 @@ void execute_instructions(size_t   *program_counter,
 
         // fprintf(stderr, "%d %d %d\n", regs[1], regs[2], regs[3]);
 
-        uint32_t inst = prog_seg[*program_counter];
+        uint32_t inst = (*prog_seg)[*program_counter];
+
+        // fprintf(stderr, "prog_c: %lu | prog_seg: %p\n", *program_counter, (void *)*prog_seg);
 
         uint32_t op, ra, rb, rc, value;
         get_regs(inst, &op, &ra, &rb, &rc);
@@ -110,12 +112,12 @@ void execute_instructions(size_t   *program_counter,
                 I_c_mov(&regs[rb], &regs[ra], &regs[rc]);
                 break;
             case 1:
-                I_seg_load(seg_source(prog_seg, other_segs, 
+                I_seg_load(seg_source(*prog_seg, other_segs, 
                                       regs[rb], regs[rc]), &regs[ra]); 
                 break;
             case 2:
                 I_seg_store(&regs[rc], 
-                            seg_source(prog_seg, other_segs, regs[ra], 
+                            seg_source(*prog_seg, other_segs, regs[ra], 
                                                              regs[rb])); 
                 break;
             case 3:
@@ -132,6 +134,7 @@ void execute_instructions(size_t   *program_counter,
                 break; 
             case 7:
                 shouldContinue = false;
+                // fprintf(stderr, "halting\n");
                 break; 
             case 8:
                 I_map(other_segs, available_indices, &regs[rb], regs[rc]);
@@ -146,7 +149,7 @@ void execute_instructions(size_t   *program_counter,
                 I_in(&regs[rc]);
                 break;
             case 12:
-                I_load_p(&prog_seg, other_segs, &regs[rb], 
+                I_load_p(prog_seg, other_segs, &regs[rb], 
                                                 &regs[rc], program_counter);
                 break;
             case 13:
@@ -154,7 +157,7 @@ void execute_instructions(size_t   *program_counter,
                 I_load_v(value, &regs[ra]);
                 break;
             default:
-                fprintf(stderr, "fuck\n"); 
+                // fprintf(stderr, "fuck\n"); 
                 shouldContinue = false;
         }
     }
@@ -181,8 +184,8 @@ uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
     if (seg_num == 0) {
         return &prog_seg[seg_index];
     } else {
-        uint32_t *segment = Seq_get(other_segs, seg_num);
-        return &segment[seg_index];
+        UArray_T segment = (UArray_T)Seq_get(other_segs, seg_num);
+        return (uint32_t *)UArray_at(segment, seg_index);
     }
 }
 
@@ -192,7 +195,8 @@ void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p)
     assert(other_segs_p != NULL && *other_segs_p != NULL);
     assert(recycled_p   != NULL && *recycled_p   != NULL);
     
-    FREE(*prog_seg_p);
+    // fprintf(stderr, "prog_seg3: %p\n", (void *)*prog_seg_p);
+    free(*prog_seg_p);
 
     deep_free_uarray(*other_segs_p);
     deep_free_int(*recycled_p);

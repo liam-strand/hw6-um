@@ -69,7 +69,6 @@ extern void I_map(Seq_T     other_segs,
                   uint32_t  num_words)
 {
     UArray_T mapped_arr = UArray_new(num_words, sizeof(uint32_t));
-    
     if (Seq_length(available_indices) != 0) {
         int *recycled_index = (int *) Seq_remlo(available_indices);
         Seq_put(other_segs, *recycled_index, mapped_arr);
@@ -109,16 +108,20 @@ extern void I_load_p(uint32_t **prog_seg_p, Seq_T   oth_segs, uint32_t *reg_b,
                      uint32_t  *reg_c,      size_t *p_counter)
 {
     if (*reg_b != 0) {
-        uint32_t *prog = *prog_seg_p;
+        FREE(*prog_seg_p);
         UArray_T to_copy = (UArray_T) Seq_get(oth_segs, *reg_b);
         int len = UArray_length(to_copy);
-        prog = (uint32_t *) realloc(prog, sizeof(uint32_t) * len);
-        assert(prog != NULL);
+        uint32_t *new_prog = ALLOC(sizeof(*new_prog) * len);
         for (int i = 0; i < len; i++) {
-            prog[i] = *(uint32_t *) UArray_at(to_copy, i);
+            new_prog[i] = *(uint32_t *) UArray_at(to_copy, i);
         }
+        // fprintf(stderr, "prog_seg1: %p\n", (void *)*prog_seg_p);
+        *prog_seg_p = new_prog;
+        // fprintf(stderr, "prog_seg2: %p\n", (void *)*prog_seg_p);
+        // fprintf(stderr, "heyo\n");
     }
     *p_counter = *reg_c;
+    // fprintf(stderr, "reg_c: %d\n", *reg_c);
 }
 
 extern void I_load_v(uint32_t value, uint32_t *dest_reg)

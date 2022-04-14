@@ -34,6 +34,26 @@ def main():
             ul.output(3),
             ul.halt(),
         ], "5"),
+        ("prog_load_test", [
+            ul.load_value(1, 5),
+            ul.load_program(0, 1),
+            ul.load_value(5, ord('F')),
+            ul.output(5),
+            ul.halt(),
+            ul.load_value(1, 3),
+            ul.map_segment(0, 1),
+            ul.load_value(4, 2),
+            ul.load_value(5, 3),
+            ul.segmented_load(6, 2, 4),
+            ul.segmented_load(7, 2, 5),
+            ul.load_value(1, 1),
+            ul.add(5, 5, 1),
+            ul.segmented_load(2, 2, 5),
+            ul.segmented_store(0, 3, 6),
+            ul.segmented_store(0, 1, 7),
+            ul.segmented_store(0, 4, 2),
+            ul.load_program(0, 3),
+        ], None)
     ]
 
     run_tests(tests)
@@ -49,10 +69,10 @@ def main():
     run_tests(generate_combined_tests(ul), "combined")
 
 def run_tests(tests: list, name=None) -> None:
-    with mp.Pool(10) as pool:
-        list(tqdm(pool.imap(apply_test, tests), total=len(tests), desc=name))
-    # for test in tqdm(tests):
-    #     apply_test(test)
+    # with mp.Pool(10) as pool:
+    #     list(tqdm(pool.imap(apply_test, tests), total=len(tests), desc=name))
+    for test in tqdm(tests):
+        apply_test(test)
     
 
 def apply_test(zipped_test) -> None:
