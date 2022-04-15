@@ -1,0 +1,66 @@
+README 
+Identifies you and your programming partner by name
+
+Liam Strand (lstran01) & Matt Ung (mung01)
+
+– Acknowledges help you may have received from or collaborative work you may have 
+undertaken with others
+
+Asking Piazza Questions
+
+– Identifies what has been correctly implemented and what has not
+
+As far as we know, we correctly implemented all instructions and the
+program as a whole correctly.
+
+– Briefly enumerates any significant departures from your design
+
+We haven't changed anything from the design document besides adding some 
+helper functions like for reading one instruction or helper for file 
+authentication in the main.
+
+– Succinctly describes the architecture of your system. Identify the modules 
+used, what abstractions they implement, what secrets they know, and how they 
+relate to one another. Avoid narrative descriptions of the behavior of 
+particular modules.
+
+Our main (the driver) handles validating proper cmd line inputs and relies on
+the run function of the um_state module for functionality. Um_state contains our
+main data structures through the 8-length array of 32-bit ints representing
+registers on the stack, the zero_seg (c-array of 32-bit ints on heap) for the 
+zero segment, a sequence of uarrays for the other segments, and a sequence 
+of ints to represented unmapped segments for later recycling. 
+
+It passes the zero_seg to our prepare module which parses the input file and 
+populates the zero_seg with the 32-bit instructions from the input file, and
+it later passes this back to um_state module for use in execute instructions 
+(a function of um_state). Execute instructions goes through the zero segment
+and un-bitpacks the registers and utilizes a switch statement to execute 
+instructions accordingly. The switch statement is run in a while loop 
+that ends when the halt statement is hit by switch a boolean used as the 
+condition for the while loop.
+
+Within the switch, the um_state module execute function calls functions from 
+our instruction module which acts upon our registers and segments to 
+execute the 14 defined functions of the universal machine. Following a 
+proper halt to our program (given a proper um program), we make sure to 
+deallocate all our heap structures using the clean up function making sure to
+prevent memory leaks through our use of mallocs and Hanson data structures.
+
+– Explains how long it takes your UM to execute 50 million instructions, and 
+  how you know
+  TODO
+  
+– Mentions each UM unit test (from UMTESTS) by name, explaining what each one 
+  tests and how
+  TODO
+  
+– Says approximately how many hours you have spent analyzing the assignment
+  4 hours
+  
+– Says approximately how many hours you have spent preparing your design
+  4 hours
+  
+– Says approximately how many hours you have spent solving the problems after 
+  your analysis
+  8 hours
