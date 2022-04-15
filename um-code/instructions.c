@@ -23,77 +23,74 @@
 
 #include "instructions.h"
 
-/* 
- * 
+/* Conditonal Move
+ * Uses check to know if to move from one register to another
  * 
  */
 extern void I_c_mov(uint32_t *source, uint32_t *dest, uint32_t *check)
 {
-    assert(source != NULL && dest != NULL && check != NULL);
     if ((*check) != 0) {
         *dest = *source;
     }
 }
 
-/* 
- * 
+/* Segment load
+ * Moves instruction value from a segment to a register
  * 
  */
 extern void I_seg_load(uint32_t *source, uint32_t *dest)
 {
-    assert(source != NULL && dest != NULL);
     *dest = *source;
 }
 
-/* 
- * 
+/* Segmented Store
+ * Moves 32 bit number to a section of segment
  * 
  */
 extern void I_seg_store(uint32_t *source, uint32_t *dest)
 {
-    assert(source != NULL && dest != NULL);
     *dest = *source;
 }
 
-/* 
- * 
- * 
- */
-extern void I_add(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
-{
-    *dest = *reg_a + *reg_b;
-}
-
-/* 
- * 
+/* Addition
+ * Adds the values of two registers and pushes to desired register
  * 
  */
-extern void I_mult(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
+extern void I_add(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
-    *dest = ((*reg_a) * (*reg_b));
+    *dest = *reg_b + *reg_c;
 }
 
-/* 
- * 
+/* Multilication
+ * Multiplies the values of two registers and pushes to desired register
  * 
  */
-extern void I_div(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
+extern void I_mult(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
-    *dest = ((*reg_a) / (*reg_b));
+    *dest = ((*reg_b) * (*reg_c));
 }
 
-/* 
- * 
+/* Divides
+ * Divides the values of two registers and pushes to desired register
  * 
  */
-extern void I_nand(uint32_t *reg_a, uint32_t *reg_b, uint32_t *dest)
+extern void I_div(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
-    *dest = ~((*reg_a) & (*reg_b));
+    *dest = ((*reg_b) / (*reg_c));
 }
 
-/* 
+/* Bitwise NAND
+ * Nands the values of two registers and pushes to desired register
  * 
- * 
+ */
+extern void I_nand(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
+{
+    *dest = ~((*reg_b) & (*reg_c));
+}
+
+/* Map
+ * Creates a new segment and utilizes recycling older (unmapped) segments
+ * to maintain neccessary memory use and pushes index to desired register
  */
 extern void I_map(Seq_T     other_segs, 
                   Seq_T     available_indices, 
@@ -114,9 +111,9 @@ extern void I_map(Seq_T     other_segs,
     }
 }
 
-/* 
- * 
- * 
+/* Unmap
+ * Removes desired segment and pushes index to available_indices for reuse
+ * to maintain neccessary memory use
  */
 extern void I_unmap(Seq_T     other_segs, 
                     Seq_T     available_indices, 
@@ -129,7 +126,7 @@ extern void I_unmap(Seq_T     other_segs,
     Seq_addhi(available_indices, free_index);
 }
 
-/* 
+/* Output
  * 
  * 
  */
@@ -163,13 +160,9 @@ extern void I_load_p(uint32_t **prog_seg_p, Seq_T   oth_segs, uint32_t *reg_b,
         for (int i = 0; i < len; i++) {
             new_prog[i] = *(uint32_t *) UArray_at(to_copy, i);
         }
-        // fprintf(stderr, "prog_seg1: %p\n", (void *)*prog_seg_p);
         *prog_seg_p = new_prog;
-        // fprintf(stderr, "prog_seg2: %p\n", (void *)*prog_seg_p);
-        // fprintf(stderr, "heyo\n");
     }
     *p_counter = *reg_c;
-    // fprintf(stderr, "reg_c: %d\n", *reg_c);
 }
 
 /* 
