@@ -25,6 +25,29 @@
 #include "prepare.h"
 #include "instructions.h"
 
+
+/* execute_instructions
+ *    Purpose: Contains the main program loop. Reads through the program
+ *             segment and executes instructions in order.
+ * Parameters: Pointers to...
+ *               - The program counter
+ *               - The program segment
+ *               - The registers
+ *             Hanson Sequences containing...
+ *               - The non-program segments
+ *               - The recyclable indices
+ *    Returns: none
+ *    Effects: Modifies all arguments to reflect the state of the program as
+ *             it is executed
+ *       CREs: none
+ *      Notes: none
+ */
+void execute_instructions(size_t   *program_counter,
+                          uint32_t **prog_seg,
+                          uint32_t *regs,
+                          Seq_T     other_segs,
+                          Seq_T     available_indices);
+
 /* clean_up
  *    Purpose: Frees memory associated with heap-allocated data structures
  * Parameters: Pointers to...
@@ -40,23 +63,22 @@
  */
 void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p);
 
-/* execute_instructions
- *    Purpose: Contains the main program loop. Reads through the program
- *             segment in 
- * Parameters: none
+/* unwrap_instruction
+ *    Purpose: Extracts the opcode and register indices from the instruction
+ * Parameters: The instruction to be unwrapped
+ *             Addresses of places to store the following...
+ *               - The opcode
+ *               - The indices of three registers
  *    Returns: none
- *    Effects: none
+ *    Effects: Stores an opcode and three register indices in the locations
+ *             referenced by the last four parameters.
  *       CREs: none
- *      Notes: none
+ *      Notes: Though several instructions do not require the use of all three
+ *             registers, this function handles most of the cases. Furthermore,
+ *             the 
  */
-void execute_instructions(size_t   *program_counter,
-                          uint32_t **prog_seg,
-                          uint32_t *regs,
-                          Seq_T     other_segs,
-                          Seq_T     available_indices);
-
-void get_regs(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
-                             uint32_t *rb_p, uint32_t *rc_p);
+void unwrap_instruction(uint32_t  inst, uint32_t *op_p, uint32_t *ra_p, 
+                        uint32_t *rb_p, uint32_t *rc_p);
 
 void prepare_lv(uint32_t inst, uint32_t *reg_id, uint32_t *value);
 
@@ -101,7 +123,7 @@ void execute_instructions(size_t   *program_counter,
         // fprintf(stderr, "prog_c: %lu | prog_seg: %p\n", *program_counter, (void *)*prog_seg);
 
         uint32_t op, ra, rb, rc, value;
-        get_regs(inst, &op, &ra, &rb, &rc);
+        unwrap_instruction(inst, &op, &ra, &rb, &rc);
 
         // fprintf(stderr, "%d %d %d %d\n", op, ra, rb, rc);
 
@@ -163,7 +185,7 @@ void execute_instructions(size_t   *program_counter,
     }
 }
 
-void get_regs(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
+void unwrap_instruction(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
                              uint32_t *rb_p, uint32_t *rc_p)
 {
     *op_p = Bitpack_getu(inst, 4, 28);

@@ -3,6 +3,7 @@
 .vscode
 writetests
 um
+testing/output
 
 # Python
 __pycache__

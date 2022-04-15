@@ -1,15 +1,10 @@
-# Makefile for um (Comp 40 Assignment 5)
+# Makefile
 #
-# Includes build rules for um and tests
-#
-# This Makefile is more verbose than necessary.  In each assignment
-# we will simplify the Makefile using more powerful syntax and implicit rules.
-#
-# Last updated: February 16, 2016
-
 # Authors: Liam Strand and Matt Ung
 # Date: April, 2022
 # Assignment: um
+#
+# Includes build rules for um and tests
 
 ############## Variables ###############
 
@@ -41,7 +36,7 @@ LDLIBS = -lbitpack -lcii40 -lm
 # dependency list.
 INCLUDES = $(shell echo *.h) 
 
-############### Rules ###############
+############### Build ###############
 
 all: um
 
@@ -58,15 +53,14 @@ um: main.o prepare.o um_state.o instructions.o
 	$(CC) $(LDFLAGS) $^ -o $@ $(LDLIBS)
 
 
-### TESTING
+############### Testing ###############
 
-# Test mains
-
-# Unit testing with python
 test: all
 	@echo -e "\n* * * * * * * * *\n* Begin" \
 	"Testing *\n* * * * * * * * *\n"
 	@python testing/test_um.py
+
+############### Utility ###############
 
 test-clean:
 	-rm -rf testing/output
