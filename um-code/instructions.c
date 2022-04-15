@@ -126,8 +126,8 @@ extern void I_unmap(Seq_T     other_segs,
     Seq_addhi(available_indices, free_index);
 }
 
-/* Output
- * 
+/* Output 
+ * Prints to standard out a value from a register
  * 
  */
 extern void I_out(uint32_t *reg)
@@ -136,8 +136,8 @@ extern void I_out(uint32_t *reg)
     fputc(*reg, stdout);
 }
 
-/* 
- * 
+/* Input
+ * Takes standard in char value and pushes to a desired register
  * 
  */
 extern void I_in(uint32_t *reg)
@@ -145,9 +145,9 @@ extern void I_in(uint32_t *reg)
     *reg = (uint32_t)fgetc(stdin);
 }
 
-/* 
- * 
- * 
+/* Load program
+ * Duplicates a desired segment and replaces the program segment, and 
+ * shifts the program segment according to instruction
  */
 extern void I_load_p(uint32_t **prog_seg_p, Seq_T   oth_segs, uint32_t *reg_b, 
                      uint32_t  *reg_c,      size_t *p_counter)
@@ -165,8 +165,8 @@ extern void I_load_p(uint32_t **prog_seg_p, Seq_T   oth_segs, uint32_t *reg_b,
     *p_counter = *reg_c;
 }
 
-/* 
- * 
+/* Load Value
+ * Moves a value into a desired register
  * 
  */
 extern void I_load_v(uint32_t value, uint32_t *dest_reg)
