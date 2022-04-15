@@ -27,6 +27,10 @@ static const unsigned BYTE_SIZE = 8;
 
 uint32_t read_one_instruction(FILE *input_file);
 
+/* parse_file
+ * Goes through input file and pushes instructions to add to zero segment 
+ * whose length was obtained through system stat interface
+ */
 extern uint32_t *parse_file(FILE *input_file, char *file_path)
 {
     struct stat buf;
@@ -43,6 +47,17 @@ extern uint32_t *parse_file(FILE *input_file, char *file_path)
     return zero_seg;
 }
 
+/* read_one_instruction
+ *    Purpose: Reads chars from input file and pushes 32-bit encoded as output
+ * Parameters: Pointers too...
+ *               - File for reading in
+ *    Returns: 32-bit int instruction
+ *    Effects: Parse together 4 characters using bitpacking to create one
+ *             instruction
+ *       CREs: If heap allocation of zero segment fails, throws CRE
+ *      Notes: Utilizes bitpack interface to create code words from characters
+ *
+ */
 uint32_t read_one_instruction(FILE *input_file)
 {
     uint32_t inst = 0;
