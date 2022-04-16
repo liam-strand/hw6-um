@@ -6,12 +6,13 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
+ * Exports a function to parse a .um file and initilize the program segment of
+ * the universal machine.
  * 
  */
 

@@ -23,9 +23,9 @@ def generate_div_tests(lib) -> list:
 def generate_mul_tests(lib) -> list:
 
     tests = []
-    for k in range(0, 8):
-        for i in range(0, 10000000, 1000000):
-            for j in range(1, 15):
+    for k in range(0, 1):
+        for i in range(0, 10000000, 5000000):
+            for j in range(10000000, 20000000, 5000000):
                 tests.append(
                     (f"mul_{i}_{j}_test", [
                         lib.load_value(k, i),
@@ -47,8 +47,8 @@ def generate_add_tests(lib) -> list:
 
     tests = []
 
-    for i in range(0, 128):
-        for j in range(0, 100000, 10000):
+    for i in range(0, 10000000, 5000000):
+        for j in range(10000000, 20000000, 5000000):
             tests.append(
                 (f"add_{i}_{j}_test", [
                     lib.load_value(1, i),
@@ -70,7 +70,7 @@ def generate_and_tests(lib) -> list:
 
     tests = []
 
-    for i in range(0, UINT_25_MAX, 100000):
+    for i in range(0, UINT_25_MAX, 8000000):
         tests.append(
             (f"and_{i}_255_test", [
                 lib.load_value(1, 255),
@@ -90,8 +90,8 @@ def generate_or_tests(lib) -> list:
 
     tests = []
 
-    for i in range(0, 256):
-        for j in range(0, 10):
+    for i in range(0, 256, 64):
+        for j in range(0, 10000000, 10000000):
             tests.append(
                 (f"or_{i}_{j}_test", [
                     lib.load_value(1, i),
@@ -111,7 +111,7 @@ def generate_cmov_tests(lib) -> list:
 
     tests = []
 
-    for i in range(1, 256):
+    for i in range(0, 256, 64):
         for k in range(0, 2):
             tests.append(
                 (f"cmov_{i}_{k}test", [
@@ -135,9 +135,9 @@ def generate_seg_map_tests(lib) -> list:
     map_1000.insert(0, lib.load_value(1, 1000))
     map_1000.append(lib.halt())
 
-    instrs = [lib.load_value(0, 100000), lib.map_segment(5, 0)]
+    instrs = [lib.load_value(0, 10000), lib.map_segment(5, 0)]
     
-    for i in range(100000):
+    for i in range(10000):
         instrs.extend([
             lib.load_value(1, i),
             lib.segmented_store(5, 1, 1),
@@ -145,15 +145,13 @@ def generate_seg_map_tests(lib) -> list:
 
     instrs.append(lib.load_value(2, 255))
 
-    for i in range(100000):
+    for i in range(10000):
         instrs.extend([
             lib.load_value(1, i),
             lib.segmented_load(6, 5, 1),
             lib.nand(3, 6, 2),
             lib.nand(4, 3, 3),
             lib.output(4),
-            lib.load_value(3, ord('\n')),
-            lib.output(3),
         ])
 
     instrs.append(lib.halt())
@@ -183,7 +181,7 @@ def generate_seg_unmap_tests(lib) -> list:
 def generate_load_seg_tests(lib) -> list:
 
     tests = []
-    for i in range(0, 256):
+    for i in range(0, 256, 64):
         tests.append(
             (f"load_seg_{i}_test", [
                 lib.load_value(0, i),
@@ -203,11 +201,11 @@ def generate_load_seg_tests(lib) -> list:
 
 def generate_combined_tests(lib) -> list:
     tests = []
-    for i in range(0, 8):
+    for i in range(0, 1):
         j = (i + 1) % 8
         k = (i + 2) % 8
         l = (i + 3) % 8
-        for n in range(0, 128):
+        for n in range(0, 128, 64):
             tests.append(
                 (f"combined_{i}_{n}_test", [
                     lib.input(j),

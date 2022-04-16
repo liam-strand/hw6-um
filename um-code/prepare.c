@@ -3,13 +3,13 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
- * 
+ * Implements a function to parse a .um file and initilize the program segment 
+ * of the universal machine.
  */
 
 
@@ -25,6 +25,17 @@
 
 static const unsigned BYTE_SIZE = 8;
 
+/* read_one_instruction
+ *    Purpose: Reads chars from input file and pushes 32-bit encoded as output
+ * Parameters: Pointers too...
+ *               - File for reading in
+ *    Returns: 32-bit int instruction
+ *    Effects: Parse together 4 characters using bitpacking to create one
+ *             instruction
+ *       CREs: If heap allocation of zero segment fails, throws CRE
+ *      Notes: Utilizes bitpack interface to create code words from characters
+ *
+ */
 uint32_t read_one_instruction(FILE *input_file);
 
 /* parse_file
@@ -48,15 +59,8 @@ extern uint32_t *parse_file(FILE *input_file, char *file_path)
 }
 
 /* read_one_instruction
- *    Purpose: Reads chars from input file and pushes 32-bit encoded as output
- * Parameters: Pointers too...
- *               - File for reading in
- *    Returns: 32-bit int instruction
- *    Effects: Parse together 4 characters using bitpacking to create one
- *             instruction
- *       CREs: If heap allocation of zero segment fails, throws CRE
- *      Notes: Utilizes bitpack interface to create code words from characters
- *
+ * Reads one instruction (4 bytes) from the opened FILE pointer, bitpacks it 
+ * into a uint32, then returns it
  */
 uint32_t read_one_instruction(FILE *input_file)
 {

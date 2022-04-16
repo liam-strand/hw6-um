@@ -6,12 +6,15 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
+ * The functions representing the 14 possible UM instructions. Each function
+ * takes references (yes we know not optimized for speed hehe) to the relevant
+ * locations in memory and any necessary additional information, and performs
+ * the required computation.
  * 
  */
 
@@ -72,8 +75,8 @@ extern void I_seg_store(uint32_t *source, uint32_t *dest);
 extern void I_add(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest);
 
 /* Multiplication
- *    Purpose: Multiplies the values between two registers and puts in destination
- *             register
+ *    Purpose: Multiplies the values between two registers and puts in 
+ *             destination register
  * Parameters: Pointers too...
  *               - register B
  *               - register C 
@@ -132,7 +135,7 @@ extern void I_map(Seq_T     other_segs, Seq_T    available_indices,
                   uint32_t *dest,       uint32_t num_words);
 
 /* Unmap
- *    Purpose: Accesses the other segs array and removes a segment indicated by 
+ *    Purpose: Accesses the other segs array and removes a segment indicated by
  *             given register and adds this segment to available_indices to
  *             recycle later
  * Parameters: other_segs: sequence representing other segments

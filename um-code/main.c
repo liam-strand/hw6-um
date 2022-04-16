@@ -3,13 +3,14 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
+ * The driver for the universal machine.
  * 
+ * Usage:     ./um <um_file>
  */
 
 #include <stdio.h>
@@ -21,8 +22,25 @@
 
 #include "um_state.h"
 
+/* prepare_args
+ *    Purpose: Prepares and verifies the command line arguments
+ * Parameters: The number of arguments and the arguments themselves
+ *    Returns: An opened FILE pointer to the umfile, or NULL
+ *    Effects: Prints to stderr if contract violation or file cannot be opened
+ *       CREs: none
+ *      Notes: none
+ */
 FILE *prepare_args(int argc, char *argv[]);
 
+/* main
+ *    Purpose: The Program Driver
+ * Parameters: The number of CLAs and the CLAs themselves
+ *    Returns: EXIT_SUCCESS if the file can be opened and the machine runs
+ *             EXIT_FAILURE if the file cannot be opened
+ *    Effects: none
+ *       CREs: Wrong number of CLAs, file cannot be opened.
+ *      Notes: none
+ */
 int main(int argc, char *argv[])
 {
     FILE *input_file = prepare_args(argc, argv);
@@ -39,12 +57,9 @@ int main(int argc, char *argv[])
 }
 
 /* prepare_args
- *    Purpose: Prepares and verifies the command line arguments
- * Parameters: The number of arguments and the arguments themselves
- *    Returns: An opened FILE pointer to the umfile, or NULL
- *    Effects: Prints to stderr if contract violation or file cannot be opened
- *       CREs: none
- *      Notes: none
+ * 1. Ensure that there are the correct number of arguments
+ * 2. Open the file
+ * 3. Check that the file opened
  */
 FILE *prepare_args(int argc, char *argv[])
 {
@@ -52,7 +67,6 @@ FILE *prepare_args(int argc, char *argv[])
         fprintf(stderr, "Usage: um <umfile>\n");
         return NULL;
     }
-
 
     FILE *file = fopen(argv[1], "r");
 

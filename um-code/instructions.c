@@ -3,13 +3,14 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
- * 
+ * The implementation for the 13 (excluding halt) UM instructions. Changes 
+ * values in registers and in segmented memory using pointers, in accordance
+ * with the instructions' instructions.
  */
 
 #include <stdlib.h>
@@ -25,7 +26,6 @@
 
 /* Conditonal Move
  * Uses check to know if to move from one register to another
- * 
  */
 extern void I_c_mov(uint32_t *source, uint32_t *dest, uint32_t *check)
 {
@@ -36,7 +36,6 @@ extern void I_c_mov(uint32_t *source, uint32_t *dest, uint32_t *check)
 
 /* Segment load
  * Moves instruction value from a segment to a register
- * 
  */
 extern void I_seg_load(uint32_t *source, uint32_t *dest)
 {
@@ -45,7 +44,6 @@ extern void I_seg_load(uint32_t *source, uint32_t *dest)
 
 /* Segmented Store
  * Moves 32 bit number to a section of segment
- * 
  */
 extern void I_seg_store(uint32_t *source, uint32_t *dest)
 {
@@ -54,7 +52,6 @@ extern void I_seg_store(uint32_t *source, uint32_t *dest)
 
 /* Addition
  * Adds the values of two registers and pushes to desired register
- * 
  */
 extern void I_add(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
@@ -63,7 +60,6 @@ extern void I_add(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 
 /* Multilication
  * Multiplies the values of two registers and pushes to desired register
- * 
  */
 extern void I_mult(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
@@ -72,7 +68,6 @@ extern void I_mult(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 
 /* Divides
  * Divides the values of two registers and pushes to desired register
- * 
  */
 extern void I_div(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
@@ -81,7 +76,6 @@ extern void I_div(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 
 /* Bitwise NAND
  * Nands the values of two registers and pushes to desired register
- * 
  */
 extern void I_nand(uint32_t *reg_b, uint32_t *reg_c, uint32_t *dest)
 {
@@ -128,7 +122,6 @@ extern void I_unmap(Seq_T     other_segs,
 
 /* Output 
  * Prints to standard out a value from a register
- * 
  */
 extern void I_out(uint32_t *reg)
 {
@@ -138,7 +131,6 @@ extern void I_out(uint32_t *reg)
 
 /* Input
  * Takes standard in char value and pushes to a desired register
- * 
  */
 extern void I_in(uint32_t *reg)
 {
@@ -167,7 +159,6 @@ extern void I_load_p(uint32_t **prog_seg_p, Seq_T   oth_segs, uint32_t *reg_b,
 
 /* Load Value
  * Moves a value into a desired register
- * 
  */
 extern void I_load_v(uint32_t value, uint32_t *dest_reg)
 {

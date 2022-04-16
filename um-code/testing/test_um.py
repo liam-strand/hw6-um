@@ -58,10 +58,11 @@ def main():
 
     run_tests(tests)
 
-    run_tests(generate_div_tests(ul), "div")
+    # run_tests(generate_div_tests(ul), "div")
     run_tests(generate_add_tests(ul), "add")
     run_tests(generate_mul_tests(ul), "mul")
     run_tests(generate_and_tests(ul), "and")
+    run_tests(generate_or_tests(ul), "or")
     run_tests(generate_cmov_tests(ul), "cmov")
     run_tests(generate_seg_map_tests(ul), "seq_map")
     run_tests(generate_seg_unmap_tests(ul), "seq_unmap")
@@ -71,8 +72,8 @@ def main():
 def run_tests(tests: list, name=None) -> None:
     # with mp.Pool(10) as pool:
     #     list(tqdm(pool.imap(apply_test, tests), total=len(tests), desc=name))
-    for test in tqdm(tests):
-        apply_test(test)
+    for test in tqdm(tests, desc=name):
+       apply_test(test)
     
 
 def apply_test(zipped_test) -> None:

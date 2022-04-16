@@ -3,16 +3,18 @@
  *
  * COMP 40 HW6: um
  *
- * By:   Matt Ung (mung01)
- *    Liam Strand (lstran01)
+ * By: Liam Strand (lstran01)
+ *     Matt Ung    (mung01)
  *
  * On: April 2022
  *
- * TODO
+ * The implementation of the universal machine. Manages segmented memory and
+ * instruction execution. Memory is cleaned up afterwards.
  * 
  */
 
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <mem.h>
@@ -57,7 +59,7 @@ void execute_instructions(size_t   *program_counter,
  *    Returns: none
  *    Effects: Recycles all memory associated with the data structures above.
  *             Additionally sets their values to NULL to prevent unwanted
- *             access of uninitilized memory.
+ *             access of uninitialized memory.
  *       CREs: Any of the parameters, or their dereferences are NULL
  *      Notes: none
  */
@@ -74,20 +76,64 @@ void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p);
  *             referenced by the last four parameters.
  *       CREs: none
  *      Notes: Though several instructions do not require the use of all three
- *             registers, this function handles most of the cases. Furthermore,
- *             the 
+ *             registers, this function handles most of the cases.
  */
 void unwrap_instruction(uint32_t  inst, uint32_t *op_p, uint32_t *ra_p, 
                         uint32_t *rb_p, uint32_t *rc_p);
 
+/* prepare_lv
+ *    Purpose: Unpacks a load_value instruction
+ * Parameters: An instructio to unpack, pointers to...
+ *               - a place to store the destination register id 
+ *               - a place to store the value to load
+ *    Returns: none
+ *    Effects: Populates reg_id and value
+ *       CREs: none
+ *      Notes: none
+ */
 void prepare_lv(uint32_t inst, uint32_t *reg_id, uint32_t *value);
 
+/* seg_source
+ *    Purpose: Accesses a location in segmented memory given a segment ID and
+ *             an index in that segment.
+ * Parameters: A pointer to the program segment
+ *             A Hanson Sequence of all other segments
+ *             The segment number and desired index
+ *    Returns: A pointer to the desired location in segmented memory
+ *    Effects: none
+ *       CREs: none
+ *      Notes: none
+ */
 uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
                      uint32_t  seg_num,  uint32_t seg_index);
 
+/* deep_free_uarray
+ *    Purpose: Frees the uarrays referenced by a Hanson Sequence
+ * Parameters: A Hanson Sequence
+ *    Returns: none
+ *    Effects: Frees everything pointed to by the parameter
+ *       CREs: The parameter is NULL
+ *      Notes: none
+ */
 void deep_free_uarray(Seq_T seq);
+
+/* deep_free_int
+ *    Purpose: Frees the ints referenced by a Hanson Sequence
+ * Parameters: A Hanson Sequence
+ *    Returns: none
+ *    Effects: Frees everything pointed to by the parameter
+ *       CREs: The parameter is NULL
+ *      Notes: none
+ */
 void deep_free_int(Seq_T seq);
 
+/* um_run
+ * 1. Parse the input file and initialize the program segment
+ * 2. Initialize the program counter and registers to hold 0
+ * 3. Initialize the Hanson sequence holding the other segments to hold
+ *    a single NULL pointer.
+ * 4. Initialize The Hanson sequence holding the recycled 
+ */
 extern void um_run(FILE *input_file, char *file_path)
 {
     uint32_t *prog_seg = parse_file(input_file, file_path);
@@ -101,11 +147,19 @@ extern void um_run(FILE *input_file, char *file_path)
 
     Seq_T recycled_ids = Seq_new(5);
 
-    execute_instructions(&prog_counter, &prog_seg, r, other_segs, recycled_ids);
+    execute_instructions(&prog_counter, &prog_seg, r, other_segs, 
+                                                      recycled_ids);
 
     clean_up(&prog_seg, &other_segs, &recycled_ids);
 }
 
+/* execute_instructions
+ * Until reaching a halt instruction...
+ * 1. Read the instruction in program segment at the program counter
+ * 2. Un-bitpack the instruction
+ * 4. Increment the program counter
+ * 3. Execute the command associated with the instruction
+ */
 void execute_instructions(size_t   *program_counter,
                           uint32_t **prog_seg,
                           uint32_t *regs,
@@ -116,75 +170,99 @@ void execute_instructions(size_t   *program_counter,
 
     while (shouldContinue) {
 
-        // fprintf(stderr, "%d %d %d\n", regs[1], regs[2], regs[3]);
-
         uint32_t inst = (*prog_seg)[*program_counter];
-
-        // fprintf(stderr, "prog_c: %lu | prog_seg: %p\n", *program_counter, (void *)*prog_seg);
 
         uint32_t op, ra, rb, rc, value;
         unwrap_instruction(inst, &op, &ra, &rb, &rc);
 
-        // fprintf(stderr, "%d %d %d %d\n", op, ra, rb, rc);
-
         (*program_counter)++;
 
         switch(op) {
+            
+            /* Conditional Move */
             case 0:
                 I_c_mov(&regs[rb], &regs[ra], &regs[rc]);
                 break;
+            
+            /* Segmented Load */
             case 1:
                 I_seg_load(seg_source(*prog_seg, other_segs, 
                                       regs[rb], regs[rc]), &regs[ra]); 
                 break;
+            
+            /* Segmented Store */
             case 2:
                 I_seg_store(&regs[rc], 
                             seg_source(*prog_seg, other_segs, regs[ra], 
-                                                             regs[rb])); 
+                                                              regs[rb])); 
                 break;
+            
+            /* Add */
             case 3:
                 I_add(&regs[rb], &regs[rc], &regs[ra]);
                 break;
+            
+            /* Multiply */
             case 4:
                 I_mult(&regs[rb], &regs[rc], &regs[ra]);
                 break;
+
+            /* Integer Divide */
             case 5:
                 I_div(&regs[rb], &regs[rc], &regs[ra]);
                 break;
+
+            /* NAND */
             case 6:
                 I_nand(&regs[rb], &regs[rc], &regs[ra]);
                 break; 
+
+            /* Break */
             case 7:
                 shouldContinue = false;
-                // fprintf(stderr, "halting\n");
                 break; 
+
+            /* Map Segment */
             case 8:
                 I_map(other_segs, available_indices, &regs[rb], regs[rc]);
                 break;
+
+            /* Unmap Segment */
             case 9:
                 I_unmap(other_segs, available_indices, &regs[rc]);
                 break;
+
+            /* Output */
             case 10:
                 I_out(&regs[rc]);
                 break;
+
+            /* Input */
             case 11:
                 I_in(&regs[rc]);
                 break;
+
+            /* Load Program */
             case 12:
                 I_load_p(prog_seg, other_segs, &regs[rb], 
-                                                &regs[rc], program_counter);
+                        &regs[rc], program_counter);
                 break;
+
+            /* Load Value */
             case 13:
                 prepare_lv(inst, &ra, &value);
                 I_load_v(value, &regs[ra]);
                 break;
             default:
-                // fprintf(stderr, "fuck\n"); 
                 shouldContinue = false;
         }
     }
-}
+}   
 
+/* unwrap_instruction
+ * Un-bitpack the opcode and the three registers and store in referenced
+ * locations.
+ */
 void unwrap_instruction(uint32_t inst, uint32_t *op_p, uint32_t *ra_p, 
                              uint32_t *rb_p, uint32_t *rc_p)
 {
@@ -194,12 +272,24 @@ void unwrap_instruction(uint32_t inst, uint32_t *op_p, uint32_t *ra_p,
     *rc_p = Bitpack_getu(inst, 3,  0);
 }
 
+/* prepare_lv
+ * The special un-bitpack for the load value instruction. Un-bitpacks the 
+ * destination register and the loading value, stores in referenced variables.
+ */
 void prepare_lv(uint32_t inst, uint32_t *reg_id, uint32_t *value)
 {
     *reg_id = Bitpack_getu(inst, 3, 25);
     *value  = Bitpack_getu(inst, 25, 0);
 }
 
+/* seg_source
+ *  1. Determines if the desired memory is in the program segment or in another
+ *     segment.
+ * 2a. If the desired memory is in the program segment, return the address of
+ *     the desired word.
+ * 2b. If the desired memory is in another segment, get the segment, access the
+ *     desired word in that segment, and return the address of that word.
+ */
 uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
                      uint32_t  seg_num,  uint32_t seg_index)
 {
@@ -211,14 +301,19 @@ uint32_t *seg_source(uint32_t *prog_seg, Seq_T    other_segs,
     }
 }
 
+/* clean_up
+ * 1. Free the program segment
+ * 2. Free other allocated segments
+ * 3. Free the integers representing reusable segment identifiers
+ * 4. Free the Hanson sequences
+ */
 void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p)
 {
     assert(prog_seg_p   != NULL && *prog_seg_p   != NULL);
     assert(other_segs_p != NULL && *other_segs_p != NULL);
     assert(recycled_p   != NULL && *recycled_p   != NULL);
     
-    // fprintf(stderr, "prog_seg3: %p\n", (void *)*prog_seg_p);
-    free(*prog_seg_p);
+    FREE(*prog_seg_p);
 
     deep_free_uarray(*other_segs_p);
     deep_free_int(*recycled_p);
@@ -231,9 +326,16 @@ void clean_up(uint32_t **prog_seg_p, Seq_T *other_segs_p, Seq_T *recycled_p)
     *recycled_p   = NULL;
 }
 
+/* deep_free_uarray
+ * Iterate through a Hanson sequence and free the UArrays referenced by the
+ * sequence's elements. If an element is NULL, don't attempt to free!
+ */
 void deep_free_uarray(Seq_T seq)
 {
+    assert(seq != NULL);
+
     unsigned len = Seq_length(seq);
+
     for (unsigned i = 1; i < len; i++) {
         UArray_T ua = (UArray_T)Seq_get(seq, i);
         if (ua != NULL) {
@@ -242,8 +344,14 @@ void deep_free_uarray(Seq_T seq)
     }
 }
 
+/* deep_free_int
+ * Iterate through a Hanson sequence and free the ints referenced by the
+ * sequence's elements. If an element is NULL, don't attempt to free!
+ */
 void deep_free_int(Seq_T seq)
 {
+    assert(seq != NULL);
+    
     unsigned len = Seq_length(seq);
     for (unsigned i = 0; i < len; i++) {
         int *n = (int *)Seq_get(seq, i);
