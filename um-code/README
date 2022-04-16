@@ -65,105 +65,105 @@ prevent memory leaks through our use of mallocs and Hanson data structures.
 – Mention each UM unit test (from UMTESTS) by name, explaining what each one 
   tests and how
   
-  unit_tests/halt_test.um
+  halt_test.um
 
     Tests that the program can halt successfully.
 
   -----
 
-  unit_tests/input_test.um
+  input_test.um
 
     Tests that the program can read input and produce output successfully.
 
   -----
 
-  unit_tests/and_0_255_test.um
-  unit_tests/and_16000000_255_test.um
-  unit_tests/and_24000000_255_test.um
-  unit_tests/and_32000000_255_test.um
-  unit_tests/and_8000000_255_test.um
-  unit_tests/or_0_0_test.um
-  unit_tests/or_128_0_test.um
-  unit_tests/or_192_0_test.um
-  unit_tests/or_64_0_test.um
+  and_0_255_test.um
+  and_16000000_255_test.um
+  and_24000000_255_test.um
+  and_32000000_255_test.um
+  and_8000000_255_test.um
+  or_0_0_test.um
+  or_128_0_test.um
+  or_192_0_test.um
+  or_64_0_test.um
 
     Logical tests that confirm that the NAND instruction performs correctly by
     expressing other boolean expressions (AND and OR) with NAND.
 
   -----
 
-  unit_tests/add_test.um
-  unit_tests/add_0_10000000_test.um
-  unit_tests/add_0_15000000_test.um
-  unit_tests/add_5000000_10000000_test.um
-  unit_tests/add_5000000_15000000_test.um
+  add_test.um
+  add_0_10000000_test.um
+  add_0_15000000_test.um
+  add_5000000_10000000_test.um
+  add_5000000_15000000_test.um
 
     Tests that both very large and very small numbers can be added together.
     Also verifies that overflows are handled consistently with the spec.
 
   -----
 
-  unit_tests/mul_0_10000000_test.um
-  unit_tests/mul_0_15000000_test.um
-  unit_tests/mul_5000000_10000000_test.um
-  unit_tests/mul_5000000_15000000_test.um
+  mul_0_10000000_test.um
+  mul_0_15000000_test.um
+  mul_5000000_10000000_test.um
+  mul_5000000_15000000_test.um
 
     Tests that very large and very small numbers can be multiplied together.
     Also verifies that overflows are handled consistently with the spec.
 
   -----
-  unit_tests/cmov_0_0test.um
-  unit_tests/cmov_0_1test.um
-  unit_tests/cmov_128_0test.um
-  unit_tests/cmov_128_1test.um
-  unit_tests/cmov_192_0test.um
-  unit_tests/cmov_192_1test.um
-  unit_tests/cmov_64_0test.um
-  unit_tests/cmov_64_1test.um
+  cmov_0_0test.um
+  cmov_0_1test.um
+  cmov_128_0test.um
+  cmov_128_1test.um
+  cmov_192_0test.um
+  cmov_192_1test.um
+  cmov_64_0test.um
+  cmov_64_1test.um
 
     Tests that the conditional move instruction behaves consistently with the
     program specification.
 
   -----
 
-  unit_tests/combined_0_0_test.um
-  unit_tests/combined_0_64_test.um
+  combined_0_0_test.um
+  combined_0_64_test.um
 
     A combined test that tests addition, multiplication, division, and NAND
     to confirm that they behave well when interacting.
 
   -----
 
-  unit_tests/load_seg_0_test.um
-  unit_tests/load_seg_128_test.um
-  unit_tests/load_seg_192_test.um
-  unit_tests/load_seg_64_test.um
+  load_seg_0_test.um
+  load_seg_128_test.um
+  load_seg_192_test.um
+  load_seg_64_test.um
 
     Verifies that data can be stored in and loaded from segments.
   
   -----
 
-  unit_tests/prog_load_test.um
+  prog_load_test.um
   
     A control flow test. Tests that the program-load instruction can
     load from a foreign segment into the program segment and execute code.
   
   -----
 
-  unit_tests/seg_big_map_load_test.um
+  seg_big_map_load_test.um
 
     Maps a big segment, loads it full of values, then prints them. Tests that
     large segments can be mapped successfully.
 
   -----
 
-  unit_tests/seg_map_stress_test.um
+  seg_map_stress_test.um
 
     Map many segments. Tests that many segments can be handeled performantly.
 
   -----
 
-  unit_tests/seg_unmap_stress_test.um
+  seg_unmap_stress_test.um
   
     Map, then immidiately unmap, many small segments. Tests that segment
     identifiers are successfully recycled.
