@@ -3,8 +3,8 @@ Identifies you and your programming partner by name
 
 Liam Strand (lstran01) & Matt Ung (mung01)
 
-– Acknowledges help you may have received from or collaborative work you may have 
-undertaken with others
+– Acknowledges help you may have received from or collaborative work you may 
+have undertaken with others
 
 Asking Piazza Questions
 Randy Dang, always
@@ -26,8 +26,8 @@ relate to one another. Avoid narrative descriptions of the behavior of
 particular modules.
 
 Our main (the driver) handles validating proper cmd line inputs and relies on
-the run function of the um_state module for functionality. Um_state contains our
-main data structures through the 8-length array of 32-bit ints representing
+the run function of the um_state module for functionality. Um_state contains 
+our main data structures through the 8-length array of 32-bit ints representing
 registers on the stack, the zero_seg (c-array of 32-bit ints on heap) for the 
 zero segment, a sequence of uarrays for the other segments, and a sequence 
 of ints to represented unmapped segments for later recycling. 
@@ -54,8 +54,8 @@ prevent memory leaks through our use of mallocs and Hanson data structures.
     The midmark.um benchmark is 85070522 instructions, we know this because we
     implimented a counter that counted each instruction as the program read it.
 
-    This benchmark took 3947538258 nanoseconds to run, excluding O(1) set-up and
-    clean-up operations.
+    This benchmark took 3947538258 nanoseconds to run, excluding O(1) set-up 
+    and clean-up operations.
 
     Using these two values, we calculated the time-per-instruction value, then 
     we multiplied that by 50 million to get the time...
@@ -170,7 +170,7 @@ prevent memory leaks through our use of mallocs and Hanson data structures.
 
   -----
 
-- Other Testing
+- Other Testing (just in case you're currious)
 
   Fail-state tests (CREs):
   - Bad filename provided
@@ -178,9 +178,6 @@ prevent memory leaks through our use of mallocs and Hanson data structures.
   - Asking for more memory than can be provided
   - Invalid commands
   
-
-
-
 – Says approximately how many hours you have spent analyzing the assignment
   4 hours
   

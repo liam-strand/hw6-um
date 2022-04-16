@@ -67,7 +67,7 @@ test-clean:
 	mkdir testing/output
 
 check:
-	-@grep -n --color=auto '.\{80\}' *.h *.c Makefile
+	-@grep -n --color=auto '.\{80\}' *.h *.c Makefile README
 
 clean: test-clean
 	-rm -f um *.o
